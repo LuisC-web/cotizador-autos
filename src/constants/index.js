@@ -1,7 +1,7 @@
-export const marcas = [
+export const MARCAS = [
   { id: 1, nombre: 'Europeo' },
   { id: 2, nombre: 'Colombiano' },
-  { id: 3, nombre: 'Nordico' },
+  { id: 3, nombre: 'Nórdico' },
 ];
 const YEARMAX = new Date().getFullYear();
 

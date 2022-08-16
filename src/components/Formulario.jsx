@@ -1,17 +1,35 @@
 import React, { Fragment } from 'react';
-import { marcas, PLANES, YEARS } from '../constants';
+import { MARCAS, PLANES, YEARS } from '../constants';
 import { useCotizador } from '../hooks/useCotizador';
+import Error from './Error';
+
+import '../styles/spiner.css';
+
+import Spiner from './Spiner';
+import Resultado from './Resultado';
 const Formulario = () => {
-  const { handleData, datos } = useCotizador();
+  const {
+    handleData,
+    datos,
+    error,
+    setError,
+    cotizarSeguro,
+    resultado,
+    cargando,
+  } = useCotizador();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (Object.values(datos).includes('')) {
-      alert('Todos los datos son obligatorios');
+      setError('Todos los campos son obligatorios');
+      return;
     }
+    setError('');
+    cotizarSeguro();
   };
   return (
     <>
       <form>
+        {error && <Error>{error}</Error>}
         <div className="my-5">
           <label className="block mb-3 font-bold  text-gray-500">Marca</label>
           <select
@@ -20,8 +38,8 @@ const Formulario = () => {
             onChange={(e) => handleData(e)}
           >
             <option value="">---Selecione marca---</option>
-            {marcas.map((marca) => (
-              <option className="" value={marca.nombre} key={marca.id}>
+            {MARCAS.map((marca) => (
+              <option className="" value={marca.id} key={marca.id}>
                 {marca.nombre}
               </option>
             ))}
@@ -52,7 +70,7 @@ const Formulario = () => {
                 <input
                   name="plan"
                   type="radio"
-                  value={plan.nombre}
+                  value={plan.id}
                   key={plan.id}
                   onChange={(e) => handleData(e)}
                 />
@@ -66,9 +84,14 @@ const Formulario = () => {
         <input
           type="submit"
           value="Cotizar"
-          className="w-full bg-pink-500 text-white font-bold p-3 rounded-lg text-xl uppercase"
+          className="w-full bg-pink-500 text-white font-bold p-3 rounded-lg text-xl uppercase cursor-pointer hover:opacity-90"
           onClick={(e) => handleSubmit(e)}
         />
+        {cargando ? (
+          <Spiner></Spiner>
+        ) : (
+          <Resultado resultado={resultado}></Resultado>
+        )}
       </form>
     </>
   );
